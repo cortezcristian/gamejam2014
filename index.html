@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Inextricable</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <div class="game-main">
+            <div class="arkapoint">
+                <canvas id="canvas-ark" width="300" height="300" style="border:0px solid black"></canvas>
+            </div>
+            <div class="facemaze">
+                <canvas height="480" id="canvas" style="background-color:#333333;float:left;" width="640"></canvas>
+            </div>
+        </div>
+        <div class="game-assets">
+            <ul>
+                <li><3</li>
+                <li><3</li>
+                <li><3</li>
+            </ul>
+            <div class="user-camera">
+            </div>
+            <div class="user-points">
+            </div>
+            <div class="ranking">
+                <div class="best-player-photo">
+                </div>
+            </div>
+            <ul>
+                <li>Metrics</li>
+                <li>X: <span class="x-head">0</span></li>
+                <li>Y: <span class="y-head">0</span></li>
+                <li>P: <span class="paddle">0</span></li>
+                <li class="winner">
+                    <h2>You Win!</h2>
+                    <img src="./img/win1.jpg" style="max-height:400px;" />
+                </li>
+            </ul>
+            <canvas id="inputCanvas" width="320" height="240"></canvas><video id="inputVideo" autoplay="autoplay" loop="loop" style="-webkit-transform: rotateX(0deg) rotateY(-180deg) rotateZ(0deg)"></video>
+
+        </div>
+
+        <script src="js/jquery-1.6.4.min.js"></script>
+        <script src="js/Box2dWeb-2.1.a.3.js"></script>
+        <script src="js/headtrackr.js"></script>
+        <script src="js/mazes.js"></script>
+        <script src="js/code.js"></script>
+    </body>
+</html>
