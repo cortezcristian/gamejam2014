@@ -502,16 +502,23 @@ function draw() {
         inxtr.games.arkanoid.gameRun = false;
         $('#play-again').show();
         inxtr.lifes--;
-        var l = Math.abs(2-3);
+        var l = Math.abs(inxtr.lifes-3);
         $('.life li').each(function(i,v){
             if(i<l){
                 $(v).addClass('lost');    
             }   
-        })
-        setTimeout(function(){
-            //rotate 4 / 2nd
-            inxtr.rotateCube(0,-180,0);
-        },2000);
+        });
+        if(inxtr.lifes){
+            setTimeout(function(){
+                //rotate 4 / 2nd
+                inxtr.rotateCube(0,-180,0);
+            },2000);
+        }else{
+            setTimeout(function(){
+                //You lose
+                inxtr.rotateCube(90,-180,0)
+            },2000);
+        }
     }    
   }
  
