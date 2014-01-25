@@ -17,6 +17,8 @@
 var inxtr = {};
     inxtr.games = {};
     inxtr.lifes = 3;
+    inxtr.points = 0;
+    inxtr.alive = true;
 
 var props = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' '),
     prop,
@@ -483,6 +485,9 @@ function draw() {
   if(inxtr.games.arkanoid.y<inxtr.games.arkanoid.NROWS*rowheight && row >=0 && col >=0 && inxtr.games.arkanoid.bricks[row][col]==1){
      inxtr.games.arkanoid.dy = -inxtr.games.arkanoid.dy;
      inxtr.games.arkanoid.bricks[row][col]=0; 
+     //give points
+     inxtr.points += Math.abs(row-5)*5;
+     $('.user-points').text(inxtr.points);
      checkWinner();
      //bricks[2][0]=1; 
   } 
