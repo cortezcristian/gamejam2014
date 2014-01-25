@@ -16,8 +16,19 @@
 
 var inxtr = {}
 
+var props = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' '),
+    prop,
+    el = document.createElement('div');
+for(var i = 0, l = props.length; i < l; i++) {
+    if(typeof el.style[props[i]] !== "undefined") {
+        prop = props[i];
+        break;
+    }
+}
+
+
 inxtr.rotateCube = function(xAngle,yAngle,zAngle){
-    document.getElementById('cube').style['transform'] = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg) rotateZ("+zAngle+"deg)";
+    document.getElementById('cube').style[prop] = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg) rotateZ("+zAngle+"deg)";
 }
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
@@ -200,6 +211,7 @@ function createWorld()
         //console.log(color);
         if(color=="#ff0000"){
             $(".winner").show();
+            inxtr.rotateCube(0,0,0);
         }
         //console.log(contact.GetFixtureA().GetBody().GetUserData()['border_color']);
         //console.log("> ", contact.GetFixtureA().GetBody());
@@ -651,6 +663,7 @@ $(function()
                     msgDraw(loser[parseInt(Math.random()*loser.length)]);
                     gameRun = false;
                     $('#play-again').show();
+                    inxtr.rotateCube(0,-180,0);
                 }    
               }
              
@@ -698,7 +711,7 @@ $(function()
                 });
 
                 document.addEventListener('headtrackingEvent',  function(e){
-                   console.log(e) 
+                   //console.log(e) 
                    if(!gameRun && !faceRun){
                     faceRun = true;
                     //Arrancar

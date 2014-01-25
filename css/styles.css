@@ -39,7 +39,7 @@ hr {
   margin: 100px auto 0;
   height: 400px;
   width: 400px;
-  -webkit-transition: -webkit-transform 0.1s linear;
+  -webkit-transition: -webkit-transform 1s linear;
   -webkit-transform-style: preserve-3d;
   -moz-transition: -moz-transform 0.1s linear;
   -moz-transform-style: preserve-3d;
