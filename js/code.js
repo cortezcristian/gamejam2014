@@ -358,6 +358,7 @@ inxtr.games.arkanoid.rightDown = false;
 inxtr.games.arkanoid.leftDown = false;
 inxtr.games.arkanoid.gameRun = false;
 inxtr.games.arkanoid.faceRun = false;
+inxtr.games.arkanoid.ballFixed = true;
 inxtr.games.arkanoid.bricksStarted = false;
 //BRICKS
 inxtr.games.arkanoid.bricks  = [],
@@ -524,6 +525,7 @@ function startGame(){
         inxtr.games.arkanoid.y = 150;
         inxtr.games.arkanoid.dx = 0;
         inxtr.games.arkanoid.dy = 0;
+        inxtr.games.arkanoid.ballFixed = true;
         inxtr.games.arkanoid.intervalId = init();
         if(!inxtr.games.arkanoid.bricksStarted){
             init_bricks();
@@ -538,6 +540,7 @@ function startGame(){
              if(count==0){
                 inxtr.games.arkanoid.dx = 2;
                 inxtr.games.arkanoid.dy = 4;
+                inxtr.games.arkanoid.ballFixed = false;
                 clearInterval(counter);
              }   
              count--;
@@ -583,6 +586,10 @@ $(document).ready(function(){
        if(inxtr.games.arkanoid.paddlex > 1 && inxtr.games.arkanoid.paddlex < inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew){
          diff = inxtr.games.arkanoid.WIDTH/2+xhead; 
          inxtr.games.arkanoid.paddlex = (diff<=1)?2:((diff>=inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew)?inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew-1:diff); 
+         if(inxtr.games.arkanoid.ballFixed){
+             inxtr.games.arkanoid.x = inxtr.games.arkanoid.paddlex+inxtr.games.arkanoid.paddlew/2;
+             inxtr.games.arkanoid.y = 280;
+         }
        }
     });
 
