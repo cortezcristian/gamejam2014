@@ -14,7 +14,8 @@
         Silver Moon (m00n.silv3r@gmail.com)
 */
 
-var inxtr = {}
+var inxtr = {};
+    inxtr.games = {};
 
 var props = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' '),
     prop,
@@ -55,26 +56,30 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
     , b2Joint = Box2D.Dynamics.Joints.b2Joint
     , b2Settings = Box2D.Common.b2Settings
     ;
- 
-var world;
-var ctx;
-var canvas_width;
-var canvas_height;
-var mouse_pressed = false;
-var mouse_joint = false;
-var mouse_x, mouse_y;
-var superball;
-var maze;
-var maze_base;
+
+inxtr.games.facemaze = {};
+
+inxtr.games.facemaze.world;
+inxtr.games.facemaze.ctx;
+inxtr.games.facemaze.canvas_width;
+inxtr.games.facemaze.canvas_height;
+inxtr.games.facemaze.canvasid="canvas";
+inxtr.games.facemaze.mouse_pressed = false;
+inxtr.games.facemaze.mouse_joint = false;
+inxtr.games.facemaze.mouse_x, inxtr.games.facemaze.mouse_y;
+inxtr.games.facemaze.superball;
+inxtr.games.facemaze.gravity;
+inxtr.games.facemaze.maze;
+inxtr.games.facemaze.maze_base;
  
 //box2d to canvas scale , therefor 1 metre of box2d = 30px of canvas :)
-var scale = 30;
+inxtr.games.facemaze.scale = 30;
  
 /*
     Draw a world
     this method is called in a loop to redraw the world
 */  
-function draw_world(world, context) 
+function draw_world(world, ctx, canvas_height, canvas_width) 
 {
     //convert the canvas coordinate directions to cartesian coordinate direction by translating and scaling
     ctx.save();
@@ -94,16 +99,16 @@ function draw_world(world, context)
 }
  
 //Create box2d world object
-function createWorld() 
-{
+function createWorld(world, gravity, canvasid, scale) {
     //Gravity vector x, y - 10 m/s2 - thats earth!!
-    var gravity = new b2Vec2(0, -10);
+    var gravity = gravity || new b2Vec2(0, -10);
+    var canvasid =  canvasid || "canvas";
      
     world = new b2World(gravity , true );
      
     //setup debug draw
     var debugDraw = new b2DebugDraw();
-    debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+    debugDraw.SetSprite(document.getElementById(canvasid).getContext("2d"));
     debugDraw.SetDrawScale(scale);
     debugDraw.SetFillAlpha(0.5);
     debugDraw.SetLineThickness(1.0);
@@ -118,61 +123,61 @@ function createWorld()
     ground = createBox(world, 0.7, 8, 0.5, 12.5, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
     ground = createBox(world, 20.3, 8, 0.5, 12.5, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)', 'border_color' : '#7FE57F' }});
 
-    maze_base = new Maze(6, 4, Maze.Algorithms.Prim);
-    maze_base.generate();
+    inxtr.games.facemaze.maze_base = new Maze(6, 4, Maze.Algorithms.Prim);
+    inxtr.games.facemaze.maze_base.generate();
     //console.table(maze_base.grid.data);
     /*
     */
-    maze_base.grid.data = maze_base.grid.data.map(function(col, i) { 
-      return maze_base.grid.data.map(function(row) { 
+    inxtr.games.facemaze.maze_base.grid.data = inxtr.games.facemaze.maze_base.grid.data.map(function(col, i) { 
+      return inxtr.games.facemaze.maze_base.grid.data.map(function(row) { 
         return row[i] 
       })
     });
     //console.table(maze_base.grid.data);
-    maze = [];
+    inxtr.games.facemaze.maze = [];
     var space=3, h_width=3, v_width=0.5, h_height=0.5, v_height=3, h_x=2, h_y=12.7, v_x=3.5, v_y=12.5;
 
     var f=0;
-    for(var i=0; i<maze_base.grid.data.length;i++){
-        for(var j=0;j<maze_base.grid.data[i].length;j++){
-            console.log("Cell("+i+","+j+") E", maze_base.isEast(i,j))
-            //console.log("Cell("+i+","+j+") W", maze_base.isWest(i,j))
-            //console.log("Cell("+i+","+j+") N", maze_base.isNorth(i,j))
-            console.log("Cell("+i+","+j+") S", maze_base.isSouth(i,j))
+    for(var i=0; i<inxtr.games.facemaze.maze_base.grid.data.length;i++){
+        for(var j=0;j<inxtr.games.facemaze.maze_base.grid.data[i].length;j++){
+            console.log("Cell("+i+","+j+") E", inxtr.games.facemaze.maze_base.isEast(i,j))
+            //console.log("Cell("+i+","+j+") W", inxtr.games.facemaze.maze_base.isWest(i,j))
+            //console.log("Cell("+i+","+j+") N", inxtr.games.facemaze.maze_base.isNorth(i,j))
+            console.log("Cell("+i+","+j+") S", inxtr.games.facemaze.maze_base.isSouth(i,j))
             f=i*2;
             console.log(f,i);
-            if(typeof maze[f]=="undefined"){
-                maze[f]= [];
+            if(typeof inxtr.games.facemaze.maze[f]=="undefined"){
+                inxtr.games.facemaze.maze[f]= [];
             }
-            if(typeof maze[f+1]=="undefined"){
-                maze[f+1]= [];
+            if(typeof inxtr.games.facemaze.maze[f+1]=="undefined"){
+                inxtr.games.facemaze.maze[f+1]= [];
             }
-            maze[f].push((maze_base.isEast(i,j))?0:1);
-            maze[f+1].push((maze_base.isSouth(i,j))?0:1);
+            inxtr.games.facemaze.maze[f].push((inxtr.games.facemaze.maze_base.isEast(i,j))?0:1);
+            inxtr.games.facemaze.maze[f+1].push((inxtr.games.facemaze.maze_base.isSouth(i,j))?0:1);
         }
     }
 
     /*
-    maze[0] = [0,1,0,1,0,1];
-    maze[1] = [1,1,1,1,1,1];
-    maze[2] = [0,1,0,1,0,1];
-    maze[3] = [1,1,1,1,1,1];
-    maze[4] = [0,1,0,1,0,1];
-    maze[5] = [1,1,1,1,1,1];
-    maze[6] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[0] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[1] = [1,1,1,1,1,1];
+    inxtr.games.facemaze.maze[2] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[3] = [1,1,1,1,1,1];
+    inxtr.games.facemaze.maze[4] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[5] = [1,1,1,1,1,1];
+    inxtr.games.facemaze.maze[6] = [0,1,0,1,0,1];
 
 
-    maze[0] = [1,1,1,1,1,1];
-    maze[1] = [0,0,1,1,1,1];
-    maze[2] = [0,1,0,1,0,1];
-    maze[3] = [1,1,1,1,1,1];
-    maze[4] = [0,1,0,1,0,1];
-    maze[5] = [0,1,1,1,1,1];
-    maze[6] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[0] = [1,1,1,1,1,1];
+    inxtr.games.facemaze.maze[1] = [0,0,1,1,1,1];
+    inxtr.games.facemaze.maze[2] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[3] = [1,1,1,1,1,1];
+    inxtr.games.facemaze.maze[4] = [0,1,0,1,0,1];
+    inxtr.games.facemaze.maze[5] = [0,1,1,1,1,1];
+    inxtr.games.facemaze.maze[6] = [0,1,0,1,0,1];
     */
 
 
-    for(var i=0;i<maze.length-1;i++){
+    for(var i=0;i<inxtr.games.facemaze.maze.length-1;i++){
         if(i%2==0){
             //vertical walls
             wval = v_width;
@@ -190,8 +195,8 @@ function createWorld()
             spacex=space;
             spacey=-1.5;
         }
-        for(var j=0; j<maze[i].length;j++){
-            if(maze[i][j]==1){
+        for(var j=0; j<inxtr.games.facemaze.maze[i].length;j++){
+            if(inxtr.games.facemaze.maze[i][j]==1){
             if(i%2==0){xval=v_x+(spacex*j);yval=v_y+(spacey*i) }else{xval=h_x+(spacex*j);yval=h_y+(spacey*i)};
             ground = createBox(world, xval, yval, wval, hval, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
             }
@@ -211,7 +216,7 @@ function createWorld()
     createBox(world, 6.50, 3.80, 1 , 1, {'user_data' : {'border_color' : '#555' }});
     createBox(world, 8.50, 3.80, 1 , 1, {'user_data' : {'fill_color' : 'rgba(204,0,165,0.3)' , 'border_color' : '#555' }});
     createBox(world, 8.50, 3.80, 1 , 1, {'user_data' : {'fill_color' : 'rgba(0,0,165,0.3)' , 'border_color' : '#b4d455', 'solution':'solved' }});
-    superball = createBall(world, 2, 13, 1 , {'user_data' : {'fill_color' : 'rgba(204,100,0,0.3)' , 'border_color' : '#555' }});
+    inxtr.games.facemaze.superball = createBall(world, 2, 13, 1 , {'user_data' : {'fill_color' : 'rgba(204,100,0,0.3)' , 'border_color' : '#555' }});
 
     var listener = new Box2D.Dynamics.b2ContactListener;
     listener.BeginContact = function(contact) {
@@ -308,11 +313,11 @@ function step()
     var timeStep = 1.0/(fps * 0.8);
      
     //move the box2d world ahead
-    world.Step(timeStep , 8 , 3);
-    world.ClearForces();
+    inxtr.games.facemaze.world.Step(timeStep , 8 , 3);
+    inxtr.games.facemaze.world.ClearForces();
      
     //redraw the world
-    draw_world(world , ctx);
+    draw_world(inxtr.games.facemaze.world , inxtr.games.facemaze.ctx, inxtr.games.facemaze.canvas_height, inxtr.games.facemaze.canvas_width);
      
     //call this function again after 1/60 seconds or 16.7ms
     setTimeout(step , 1000 / fps);
@@ -326,11 +331,11 @@ function get_real(p)
  
 function GetBodyAtMouse(includeStatic)
 {
-    var mouse_p = new b2Vec2(mouse_x, mouse_y);
+    var mouse_p = new b2Vec2(inxtr.games.facemaze.mouse_x, inxtr.games.facemaze.mouse_y);
      
     var aabb = new b2AABB();
-    aabb.lowerBound.Set(mouse_x - 0.001, mouse_y - 0.001);
-    aabb.upperBound.Set(mouse_x + 0.001, mouse_y + 0.001);
+    aabb.lowerBound.Set(inxtr.games.facemaze.mouse_x - 0.001, inxtr.games.facemaze.mouse_y - 0.001);
+    aabb.upperBound.Set(inxtr.games.facemaze.mouse_x + 0.001, inxtr.games.facemaze.mouse_y + 0.001);
      
     var body = null;
      
@@ -353,7 +358,7 @@ function GetBodyAtMouse(includeStatic)
         return true;
     }
      
-    world.QueryAABB(GetBodyCallback, aabb);
+    inxtr.games.facemaze.world.QueryAABB(GetBodyCallback, aabb);
     return body;
 }
  
@@ -361,23 +366,23 @@ function GetBodyAtMouse(includeStatic)
 $(function() 
 {
     //first create the world
-    world = createWorld();
+    inxtr.games.facemaze.world = createWorld(inxtr.games.facemaze.world, inxtr.games.facemaze.gravity, inxtr.games.facemaze.canvasid, inxtr.games.facemaze.scale);
      
-    var canvas = $('#canvas');
-    ctx = canvas.get(0).getContext('2d');
+    var canvas = $('#'+inxtr.games.facemaze.canvasid);
+    inxtr.games.facemaze.ctx = canvas.get(0).getContext('2d');
      
     //get internal dimensions of the canvas
-    canvas_width = parseInt(canvas.attr('width'));
-    canvas_height = parseInt(canvas.attr('height'));
-    canvas_height_m = canvas_height / scale;
+    inxtr.games.facemaze.canvas_width = parseInt(canvas.attr('width'));
+    inxtr.games.facemaze.canvas_height = parseInt(canvas.attr('height'));
+    canvas_height_m = inxtr.games.facemaze.canvas_height / inxtr.games.facemaze.scale;
     /* 
     //If mouse is moving over the thing
     $(canvas).mousemove(function(e) 
     {
         var p = get_real(new b2Vec2(e.pageX/scale, e.pageY/scale))
          
-        mouse_x = p.x;
-        mouse_y = p.y;
+        inxtr.games.facemaze.mouse_x = p.x;
+        inxtr.games.facemaze.mouse_y = p.y;
          
         if(mouse_pressed && !mouse_joint)
         {
@@ -446,18 +451,18 @@ $(function()
         //var p = get_real(new b2Vec2(e.x/scale, e.y/scale))
         //var p = get_real(new b2Vec2(e.x/20*4, (e.y-10)*-1))
         //var p = get_real(new b2Vec2(e.x, e.y/10*-1))
-        var xhead = e.x/11*scale+scale/2;        
-        var yhead = e.y*-1+scale/2+5;        
+        var xhead = e.x/11*inxtr.games.facemaze.scale+inxtr.games.facemaze.scale/2;        
+        var yhead = e.y*-1+inxtr.games.facemaze.scale/2+5;        
         $('.x-head').html(xhead);
         $('.y-head').html(yhead);
         var p = get_real(new b2Vec2(xhead, yhead));
          
-        mouse_x = p.x;
-        mouse_y = p.y;
+        inxtr.games.facemaze.mouse_x = p.x;
+        inxtr.games.facemaze.mouse_y = p.y;
          
-        if(!mouse_joint)
+        if(!inxtr.games.facemaze.mouse_joint)
         {
-            var body = superball;
+            var body = inxtr.games.facemaze.superball;
              
             if(body)
             {
@@ -467,7 +472,7 @@ $(function()
                 def.bodyA = ground;
                 def.bodyB = body;
                 
-                firstTar = superball.GetPosition();
+                firstTar = inxtr.games.facemaze.superball.GetPosition();
                 //fp = get_real(new b2Vec2(firstTar.x, firstTar.y));
                 fp = new b2Vec2(firstTar.x, firstTar.y);
                 //fp = p;
@@ -477,7 +482,7 @@ $(function()
                 def.maxForce = 1000 * body.GetMass();
                 def.dampingRatio = 0;
                  
-                mouse_joint = world.CreateJoint(def);
+                inxtr.games.facemaze.mouse_joint = inxtr.games.facemaze.world.CreateJoint(def);
                  
                 body.SetAwake(true);
             }
@@ -487,26 +492,26 @@ $(function()
             //nothing
         }
          
-        if(mouse_joint)
+        if(inxtr.games.facemaze.mouse_joint)
         {
-            mouse_joint.SetTarget(p);
+            inxtr.games.facemaze.mouse_joint.SetTarget(p);
         }
     });
 
     document.addEventListener('keydown', function(e){
         if(e.keyCode==16){
-            mouse_pressed = true;
+            inxtr.games.facemaze.mouse_pressed = true;
         }
     });
 
     document.addEventListener('keyup', function(e){
         if(e.keyCode==16){
-            mouse_pressed = false;
+            inxtr.games.facemaze.mouse_pressed = false;
              
-            if(mouse_joint)
+            if(inxtr.games.facemaze.mouse_joint)
             {
-                world.DestroyJoint(mouse_joint);
-                mouse_joint = false;
+                inxtr.games.facemaze.world.DestroyJoint(inxtr.games.facemaze.mouse_joint);
+                inxtr.games.facemaze.mouse_joint = false;
             }
         }
     });
