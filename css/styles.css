@@ -117,3 +117,23 @@ canvas.lighter {opacity: 0.7; }
 .lose-face {
     background: #fc1501;
 }
+
+.game-gravity-move {
+width: 99%;
+border: 1px solid gray;
+padding: 5px;
+background: #ccc;
+position: fixed;
+bottom: 0;
+margin: 0 auto;    
+    
+}
+
+.gravity-box {
+    background: red;
+    height: 10px;
+    width: 100px;
+    left: 50%;
+    position: absolute;    
+    
+}
