@@ -58,6 +58,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
     ;
 
 inxtr.games.facemaze = {};
+inxtr.games.arkanoid = {};
 
 inxtr.games.facemaze.world;
 inxtr.games.facemaze.ctx;
@@ -157,26 +158,6 @@ function createWorld(world, gravity, canvasid, scale) {
         }
     }
 
-    /*
-    inxtr.games.facemaze.maze[0] = [0,1,0,1,0,1];
-    inxtr.games.facemaze.maze[1] = [1,1,1,1,1,1];
-    inxtr.games.facemaze.maze[2] = [0,1,0,1,0,1];
-    inxtr.games.facemaze.maze[3] = [1,1,1,1,1,1];
-    inxtr.games.facemaze.maze[4] = [0,1,0,1,0,1];
-    inxtr.games.facemaze.maze[5] = [1,1,1,1,1,1];
-    inxtr.games.facemaze.maze[6] = [0,1,0,1,0,1];
-
-
-    inxtr.games.facemaze.maze[0] = [1,1,1,1,1,1];
-    inxtr.games.facemaze.maze[1] = [0,0,1,1,1,1];
-    inxtr.games.facemaze.maze[2] = [0,1,0,1,0,1];
-    inxtr.games.facemaze.maze[3] = [1,1,1,1,1,1];
-    inxtr.games.facemaze.maze[4] = [0,1,0,1,0,1];
-    inxtr.games.facemaze.maze[5] = [0,1,1,1,1,1];
-    inxtr.games.facemaze.maze[6] = [0,1,0,1,0,1];
-    */
-
-
     for(var i=0;i<inxtr.games.facemaze.maze.length-1;i++){
         if(i%2==0){
             //vertical walls
@@ -203,12 +184,6 @@ function createWorld(world, gravity, canvasid, scale) {
         }
     }
 
-    // inner walls
-    //ground = createBox(world, 2, 11, 3, 0.5, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
-    //ground = createBox(world, 6, 9.7, 0.5, 9, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
-    /*
-    ground = createBox(world, 4.7, 5, 3, 0.5, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
-    */
     ground = createBox(world, 18, 5, 5, 0.5, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
     ground = createBox(world, 15.2, 7.8, 0.5, 6, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(204,237,165,1)' , 'border_color' : '#7FE57F' }});
     ground = createBox(world, 18, 5.3, 5, 0.2, {type : b2Body.b2_staticBody, 'user_data' : {'fill_color' : 'rgba(255,0,0,1)' , 'border_color' : '#ff0000' }});
@@ -361,10 +336,235 @@ function GetBodyAtMouse(includeStatic)
     inxtr.games.facemaze.world.QueryAABB(GetBodyCallback, aabb);
     return body;
 }
+
+//
+// Arkanoid
+//
+inxtr.games.arkanoid.loser = ["You Lose!", "Casi... pero no.", "Que lastima", "Suerte la proxima", "Hasta la vista baby", "jaja... loser", "Manco", "Pecheaste", "Dedicate a otra cosa", "Tendra solucion?"]
+inxtr.games.arkanoid.x = 138;
+inxtr.games.arkanoid.y = 150;
+inxtr.games.arkanoid.dx = 2;
+inxtr.games.arkanoid.dy = 4;
+inxtr.games.arkanoid.WIDTH;
+inxtr.games.arkanoid.HEIGHT;
+inxtr.games.arkanoid.ctx;
+inxtr.games.arkanoid.paddlex;
+inxtr.games.arkanoid.paddleh;
+inxtr.games.arkanoid.paddlew;
+inxtr.games.arkanoid.intervalId;
+inxtr.games.arkanoid.rightDown = false;
+inxtr.games.arkanoid.leftDown = false;
+inxtr.games.arkanoid.gameRun = false;
+inxtr.games.arkanoid.faceRun = false;
+//BRICKS
+inxtr.games.arkanoid.bricks  = [],
+    inxtr.games.arkanoid.NROWS   = 5,
+    inxtr.games.arkanoid.NCOLS   = 5,
+    inxtr.games.arkanoid.PADDING = 1,
+    inxtr.games.arkanoid.BRICKH  = 15,
+    inxtr.games.arkanoid.BRICKW;
+inxtr.games.arkanoid.bricksColors = ["#ff1c0a","#fffd0a","#00a308","#0008db","#eb0093"]
+
+function init_bricks(){
+    inxtr.games.arkanoid.BRICKW = (inxtr.games.arkanoid.WIDTH/inxtr.games.arkanoid.NCOLS)-1;
+    
+    for(var i=0;i<inxtr.games.arkanoid.NROWS;i++){
+        inxtr.games.arkanoid.bricks[i] = [];
+        for(var j=0;j<inxtr.games.arkanoid.NCOLS;j++){
+            inxtr.games.arkanoid.bricks[i][j] = 1;    
+        }
+    }    
+}
+
+function init_paddle(){
+    inxtr.games.arkanoid.paddlex = inxtr.games.arkanoid.WIDTH/2;
+    inxtr.games.arkanoid.paddleh = 10;
+    inxtr.games.arkanoid.paddlew = 125;
+}
+
+function init() {
+  inxtr.games.arkanoid.ctx = document.getElementById("canvas-ark").getContext("2d");
+  inxtr.games.arkanoid.WIDTH = 300;
+  inxtr.games.arkanoid.HEIGHT = 300;
+  return setInterval(draw, 10);
+}
+
+function circle(x,y,r) {
+  inxtr.games.arkanoid.ctx.fillStyle = "#888";  
+  inxtr.games.arkanoid.ctx.beginPath();
+  inxtr.games.arkanoid.ctx.arc(x, y, r, 0, Math.PI*2, true);
+  inxtr.games.arkanoid.ctx.closePath();
+  inxtr.games.arkanoid.ctx.fill();
+}
+
+function rect(x,y,w,h) {
+  inxtr.games.arkanoid.ctx.beginPath();
+  inxtr.games.arkanoid.ctx.rect(x,y,w,h);
+  inxtr.games.arkanoid.ctx.closePath();
+  inxtr.games.arkanoid.ctx.fill();
+}
+
+function clear() {
+  inxtr.games.arkanoid.ctx.clearRect(0, 0, inxtr.games.arkanoid.WIDTH, inxtr.games.arkanoid.HEIGHT);
+}
+
+function checkWinner() {
+    var findOne = false;
+
+    for(var i=0;i<inxtr.games.arkanoid.bricks.length;i++){
+       for(var j=0;j<inxtr.games.arkanoid.bricks[i].length;j++){
+         if(inxtr.games.arkanoid.bricks[i][j]==1){
+        findOne = true;
+        break;
+         }
+       }
+    }
+
+    if(!findOne){
+        setTimeout(function(){
+            clearInterval(inxtr.games.arkanoid.intervalId);
+            msgDraw("You Win!");
+            inxtr.games.arkanoid.gameRun = false;
+            $('#play-again').show();
+        }, 50);
+    }
+    /**Borrar mas tarde
+    for(var i=0;i<bricks.length-1;i++){
+       for(var j=0;j<bricks[i].length;j++){
+         bricks[i][j]=0
+       }
+    }
+    /**Borrar mas tarde**/
+}
+
+function msgDraw(m) {
+  //clear();
+  inxtr.games.arkanoid.ctx.fillStyle = "#000";
+  inxtr.games.arkanoid.ctx.font="30px Arial";
+  inxtr.games.arkanoid.ctx.textAlign = 'center';
+  inxtr.games.arkanoid.ctx.fillText(m,inxtr.games.arkanoid.WIDTH/2,inxtr.games.arkanoid.HEIGHT/2);
+}
+//END LIBRARY CODE
+
+function draw() {
+  clear();
+  circle(inxtr.games.arkanoid.x, inxtr.games.arkanoid.y, 10);
+  
+  if(inxtr.games.arkanoid.rightDown && inxtr.games.arkanoid.paddlex < inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew){
+    inxtr.games.arkanoid.paddlex += 5;
+  }
+  if(inxtr.games.arkanoid.leftDown && inxtr.games.arkanoid.paddlex > 1){
+    inxtr.games.arkanoid.paddlex -= 5; 
+  }
+  rect(inxtr.games.arkanoid.paddlex,inxtr.games.arkanoid.HEIGHT-inxtr.games.arkanoid.paddleh,inxtr.games.arkanoid.paddlew,inxtr.games.arkanoid.paddleh);
+
+  //draw bricks
+  for(var i=0;i<inxtr.games.arkanoid.NROWS;i++){
+    inxtr.games.arkanoid.ctx.fillStyle = inxtr.games.arkanoid.bricksColors[i];  
+    for(var j=0;j<inxtr.games.arkanoid.NCOLS;j++){
+        if(inxtr.games.arkanoid.bricks[i][j]==1){
+            //dibujalo
+            rect(j*(inxtr.games.arkanoid.BRICKW+inxtr.games.arkanoid.PADDING)+inxtr.games.arkanoid.PADDING,i*(inxtr.games.arkanoid.BRICKH+inxtr.games.arkanoid.PADDING)+inxtr.games.arkanoid.PADDING,inxtr.games.arkanoid.BRICKW,inxtr.games.arkanoid.BRICKH);    
+        }
+    }
+  }
+
+  //bricks collisions
+  rowheight = inxtr.games.arkanoid.BRICKH + inxtr.games.arkanoid.PADDING;
+  rowwidth = inxtr.games.arkanoid.BRICKW + inxtr.games.arkanoid.PADDING;
+  row = Math.floor(inxtr.games.arkanoid.y/rowheight);
+  col = Math.floor(inxtr.games.arkanoid.x/rowwidth);
  
-// main entry point
-$(function() 
-{
+  if(inxtr.games.arkanoid.y<inxtr.games.arkanoid.NROWS*rowheight && row >=0 && col >=0 && inxtr.games.arkanoid.bricks[row][col]==1){
+     inxtr.games.arkanoid.dy = -inxtr.games.arkanoid.dy;
+     inxtr.games.arkanoid.bricks[row][col]=0; 
+     checkWinner();
+     //bricks[2][0]=1; 
+  } 
+
+  if (inxtr.games.arkanoid.x + inxtr.games.arkanoid.dx > inxtr.games.arkanoid.WIDTH || inxtr.games.arkanoid.x + inxtr.games.arkanoid.dx < 0){
+    inxtr.games.arkanoid.dx = -inxtr.games.arkanoid.dx;
+  }
+
+  if (inxtr.games.arkanoid.y + inxtr.games.arkanoid.dy < 0){
+    inxtr.games.arkanoid.dy = -inxtr.games.arkanoid.dy;
+  }else if(inxtr.games.arkanoid.y + inxtr.games.arkanoid.dy > inxtr.games.arkanoid.HEIGHT){
+    if(inxtr.games.arkanoid.x>inxtr.games.arkanoid.paddlex&&inxtr.games.arkanoid.x<inxtr.games.arkanoid.paddlex+inxtr.games.arkanoid.paddlew){
+        inxtr.games.arkanoid.dy = -inxtr.games.arkanoid.dy;
+    }else{
+        //dy = -dy;
+        clearInterval(inxtr.games.arkanoid.intervalId);
+        msgDraw(inxtr.games.arkanoid.loser[parseInt(Math.random()*inxtr.games.arkanoid.loser.length)]);
+        inxtr.games.arkanoid.gameRun = false;
+        $('#play-again').show();
+        setTimeout(function(){
+            //rotate 4 / 2nd
+            inxtr.rotateCube(0,-180,0);
+        },2000);
+    }    
+  }
+ 
+  inxtr.games.arkanoid.x += inxtr.games.arkanoid.dx;
+  inxtr.games.arkanoid.y += inxtr.games.arkanoid.dy;
+}
+
+function startGame(){
+    if(!inxtr.games.arkanoid.gameRun){
+        inxtr.games.arkanoid.x = 138;
+        inxtr.games.arkanoid.y = 150;
+        inxtr.games.arkanoid.dx = 2;
+        inxtr.games.arkanoid.dy = 4;
+        inxtr.games.arkanoid.intervalId = init();
+        init_bricks();
+        init_paddle();
+        inxtr.games.arkanoid.gameRun = true;
+        $('#play-again').hide()
+    }
+}
+
+$(document).ready(function(){
+    $(document).keydown(function(e){
+        if(e.keyCode==39){
+            inxtr.games.arkanoid.rightDown = true;
+        }
+
+        if(e.keyCode==37){
+            inxtr.games.arkanoid.leftDown = true;
+        }
+    });
+
+    $(document).keyup(function(e){
+        if(e.keyCode==39){
+            inxtr.games.arkanoid.rightDown = false;
+        }
+
+        if(e.keyCode==37){
+            inxtr.games.arkanoid.leftDown = false;
+        }
+    });
+
+    $('#play-again a').click(function(e){
+        startGame();            
+    });
+
+    document.addEventListener('headtrackingEvent',  function(e){
+       //console.log(e) 
+       if(!inxtr.games.arkanoid.gameRun && !inxtr.games.arkanoid.faceRun){
+        inxtr.games.arkanoid.faceRun = true;
+        //Arrancar
+        startGame();
+       }
+       var xhead = parseInt(e.x*10);        
+       $('.paddle-move').text(xhead);
+       $('.paddle').text(inxtr.games.arkanoid.paddlex);
+       if(inxtr.games.arkanoid.paddlex > 1 && inxtr.games.arkanoid.paddlex < inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew){
+         diff = inxtr.games.arkanoid.WIDTH/2+xhead; 
+         inxtr.games.arkanoid.paddlex = (diff<=1)?2:((diff>=inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew)?inxtr.games.arkanoid.WIDTH-inxtr.games.arkanoid.paddlew-1:diff); 
+       }
+    });
+
+    //Start Facemaze
+
     //first create the world
     inxtr.games.facemaze.world = createWorld(inxtr.games.facemaze.world, inxtr.games.facemaze.gravity, inxtr.games.facemaze.canvasid, inxtr.games.facemaze.scale);
      
@@ -375,69 +575,7 @@ $(function()
     inxtr.games.facemaze.canvas_width = parseInt(canvas.attr('width'));
     inxtr.games.facemaze.canvas_height = parseInt(canvas.attr('height'));
     canvas_height_m = inxtr.games.facemaze.canvas_height / inxtr.games.facemaze.scale;
-    /* 
-    //If mouse is moving over the thing
-    $(canvas).mousemove(function(e) 
-    {
-        var p = get_real(new b2Vec2(e.pageX/scale, e.pageY/scale))
-         
-        inxtr.games.facemaze.mouse_x = p.x;
-        inxtr.games.facemaze.mouse_y = p.y;
-         
-        if(mouse_pressed && !mouse_joint)
-        {
-            var body = GetBodyAtMouse();
-             
-            if(body)
-            {
-                //if joint exists then create
-                var def = new b2MouseJointDef();
-                 
-                def.bodyA = ground;
-                def.bodyB = body;
-                def.target = p;
-                 
-                def.collideConnected = true;
-                def.maxForce = 1000 * body.GetMass();
-                def.dampingRatio = 0;
-                 
-                mouse_joint = world.CreateJoint(def);
-                 
-                body.SetAwake(true);
-            }
-        }
-        else
-        {
-            //nothing
-        }
-         
-        if(mouse_joint)
-        {
-            mouse_joint.SetTarget(p);
-        }
-    });
-     
-    $(canvas).mousedown(function() 
-    {
-        //flag to indicate if mouse is pressed or not
-        mouse_pressed = true;
-    });
-     */
-    /*
-        When mouse button is release, mark pressed as false and delete the mouse joint if it exists
-    */
-    /*
-    $(canvas).mouseup(function() 
-    {
-        mouse_pressed = false;
-         
-        if(mouse_joint)
-        {
-            world.DestroyJoint(mouse_joint);
-            mouse_joint = false;
-        }
-    });
-     */
+
     //start stepping
     step();
 
@@ -516,232 +654,4 @@ $(function()
         }
     });
 });
-
-(function(){
- //BEGIN LIBRARY CODE
-            var loser = ["You Lose!", "Casi... pero no.", "Que lastima", "Suerte la proxima", "Hasta la vista baby", "jaja... loser", "Manco", "Pecheaste", "Dedicate a otra cosa", "Tendra solucion?"]
-            var x = 138;
-            var y = 150;
-            var dx = 2;
-            var dy = 4;
-            var WIDTH;
-            var HEIGHT;
-            var ctx;
-            var paddlex;
-            var paddleh;
-            var paddlew;
-            var intervalId;
-            var rightDown = false;
-            var leftDown = false;
-            var gameRun = false;
-            var faceRun = false;
-            //BRICKS
-            var bricks  = [],
-                NROWS   = 5,
-                NCOLS   = 5,
-                PADDING = 1,
-                BRICKH  = 15,
-                BRICKW;
-            var bricksColors = ["#ff1c0a","#fffd0a","#00a308","#0008db","#eb0093"]
-
-            function init_bricks(){
-                BRICKW = (WIDTH/NCOLS)-1;
-                
-                for(var i=0;i<NROWS;i++){
-                    bricks[i] = [];
-                    for(var j=0;j<NCOLS;j++){
-                        bricks[i][j] = 1;    
-                    }
-                }    
-            }
-
-            function init_paddle(){
-                paddlex = WIDTH/2;
-                paddleh = 10;
-                paddlew = 125;
-            }
-
-            function init() {
-              ctx = document.getElementById("canvas-ark").getContext("2d");
-              WIDTH = 300;
-              HEIGHT = 300;
-              return setInterval(draw, 10);
-            }
-
-            function circle(x,y,r) {
-              ctx.fillStyle = "#888";  
-              ctx.beginPath();
-              ctx.arc(x, y, r, 0, Math.PI*2, true);
-              ctx.closePath();
-              ctx.fill();
-            }
-
-            function rect(x,y,w,h) {
-              ctx.beginPath();
-              ctx.rect(x,y,w,h);
-              ctx.closePath();
-              ctx.fill();
-            }
-
-            function clear() {
-              ctx.clearRect(0, 0, WIDTH, HEIGHT);
-            }
-
-            function checkWinner() {
-                var findOne = false;
-
-                for(var i=0;i<bricks.length;i++){
-                   for(var j=0;j<bricks[i].length;j++){
-                     if(bricks[i][j]==1){
-                    findOne = true;
-                    break;
-                     }
-                   }
-                }
-
-                if(!findOne){
-                    setTimeout(function(){
-                        clearInterval(intervalId);
-                        msgDraw("You Win!");
-                        gameRun = false;
-                        $('#play-again').show();
-                    }, 50);
-                }
-                /**Borrar mas tarde
-                for(var i=0;i<bricks.length-1;i++){
-                   for(var j=0;j<bricks[i].length;j++){
-                     bricks[i][j]=0
-                   }
-                }
-                /**Borrar mas tarde**/
-            }
-
-            function msgDraw(m) {
-              //clear();
-              ctx.fillStyle = "#000";
-              ctx.font="30px Arial";
-              ctx.textAlign = 'center';
-              ctx.fillText(m,WIDTH/2,HEIGHT/2);
-            }
-            //END LIBRARY CODE
-
-            function draw() {
-              clear();
-              circle(x, y, 10);
-              
-              if(rightDown && paddlex < WIDTH-paddlew){
-                paddlex += 5;
-              }
-              if(leftDown && paddlex > 1){
-                paddlex -= 5; 
-              }
-              rect(paddlex,HEIGHT-paddleh,paddlew,paddleh);
-
-              //draw bricks
-              for(var i=0;i<NROWS;i++){
-                ctx.fillStyle = bricksColors[i];  
-                for(var j=0;j<NCOLS;j++){
-                    if(bricks[i][j]==1){
-                        //dibujalo
-                        rect(j*(BRICKW+PADDING)+PADDING,i*(BRICKH+PADDING)+PADDING,BRICKW,BRICKH);    
-                    }
-                }
-              }
-
-              //bricks collisions
-              rowheight = BRICKH + PADDING;
-              rowwidth = BRICKW + PADDING;
-              row = Math.floor(y/rowheight);
-              col = Math.floor(x/rowwidth);
-             
-              if(y<NROWS*rowheight && row >=0 && col >=0 && bricks[row][col]==1){
-                 dy = -dy;
-                 bricks[row][col]=0; 
-                 checkWinner();
-                 //bricks[2][0]=1; 
-              } 
-
-              if (x + dx > WIDTH || x + dx < 0){
-                dx = -dx;
-              }
-
-              if (y + dy < 0){
-                dy = -dy;
-              }else if(y + dy > HEIGHT){
-                if(x>paddlex&&x<paddlex+paddlew){
-                    dy = -dy;
-                }else{
-                    //dy = -dy;
-                    clearInterval(intervalId);
-                    msgDraw(loser[parseInt(Math.random()*loser.length)]);
-                    gameRun = false;
-                    $('#play-again').show();
-                    setTimeout(function(){
-                        //rotate 4 / 2nd
-                        inxtr.rotateCube(0,-180,0);
-                    },2000);
-                }    
-              }
-             
-              x += dx;
-              y += dy;
-            }
-
-            function startGame(){
-                if(!gameRun){
-                    x = 138;
-                    y = 150;
-                    dx = 2;
-                    dy = 4;
-                    intervalId = init();
-                    init_bricks();
-                    init_paddle();
-                    gameRun = true;
-                    $('#play-again').hide()
-                }
-            }
-
-            $(document).ready(function(){
-                $(document).keydown(function(e){
-                    if(e.keyCode==39){
-                        rightDown = true;
-                    }
-
-                    if(e.keyCode==37){
-                        leftDown = true;
-                    }
-                });
-
-                $(document).keyup(function(e){
-                    if(e.keyCode==39){
-                        rightDown = false;
-                    }
-
-                    if(e.keyCode==37){
-                        leftDown = false;
-                    }
-                });
-
-                $('#play-again a').click(function(e){
-                    startGame();            
-                });
-
-                document.addEventListener('headtrackingEvent',  function(e){
-                   //console.log(e) 
-                   if(!gameRun && !faceRun){
-                    faceRun = true;
-                    //Arrancar
-                    startGame();
-                   }
-                   var xhead = parseInt(e.x*10);        
-                   $('.paddle-move').text(xhead);
-                   $('.paddle').text(paddlex);
-                   if(paddlex > 1 && paddlex < WIDTH-paddlew){
-                     diff = WIDTH/2+xhead; 
-                     paddlex = (diff<=1)?2:((diff>=WIDTH-paddlew)?WIDTH-paddlew-1:diff); 
-                   }
-                });
-            });
-})();
-
 
