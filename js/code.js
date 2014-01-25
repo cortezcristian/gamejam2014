@@ -199,8 +199,9 @@ function createWorld(world, gravity, canvasid, scale) {
         var color = contact.GetFixtureA().GetBody().GetUserData()['border_color'];
         //console.log(color);
         if(color=="#ff0000"){
-            $(".winner").show();
-            inxtr.rotateCube(0,-90,0);
+            //$(".winner").show();
+            inxtr.rotateCube(0,0,0);
+            startGame();
         }
         //console.log(contact.GetFixtureA().GetBody().GetUserData()['border_color']);
         //console.log("> ", contact.GetFixtureA().GetBody());
@@ -341,7 +342,7 @@ function GetBodyAtMouse(includeStatic)
 //
 // Arkanoid
 //
-inxtr.games.arkanoid.loser = ["You Lose!", "Casi... pero no.", "Que lastima", "Suerte la proxima", "Hasta la vista baby", "jaja... loser", "Manco", "Pecheaste", "Dedicate a otra cosa", "Tendra solucion?"]
+inxtr.games.arkanoid.loser = ["Resolve the maze", "So close :)", "Ohhhhh!!!"]
 inxtr.games.arkanoid.x = 138;
 inxtr.games.arkanoid.y = 150;
 inxtr.games.arkanoid.dx = 2;
@@ -357,6 +358,7 @@ inxtr.games.arkanoid.rightDown = false;
 inxtr.games.arkanoid.leftDown = false;
 inxtr.games.arkanoid.gameRun = false;
 inxtr.games.arkanoid.faceRun = false;
+inxtr.games.arkanoid.bricksStarted = false;
 //BRICKS
 inxtr.games.arkanoid.bricks  = [],
     inxtr.games.arkanoid.NROWS   = 5,
@@ -440,8 +442,8 @@ function checkWinner() {
 
 function msgDraw(m) {
   //clear();
-  inxtr.games.arkanoid.ctx.fillStyle = "#000";
-  inxtr.games.arkanoid.ctx.font="30px Arial";
+  inxtr.games.arkanoid.ctx.fillStyle = "#fff";
+  inxtr.games.arkanoid.ctx.font="30px 'VT323', cursive";
   inxtr.games.arkanoid.ctx.textAlign = 'center';
   inxtr.games.arkanoid.ctx.fillText(m,inxtr.games.arkanoid.WIDTH/2,inxtr.games.arkanoid.HEIGHT/2);
 }
@@ -520,13 +522,26 @@ function startGame(){
     if(!inxtr.games.arkanoid.gameRun){
         inxtr.games.arkanoid.x = 138;
         inxtr.games.arkanoid.y = 150;
-        inxtr.games.arkanoid.dx = 2;
-        inxtr.games.arkanoid.dy = 4;
+        inxtr.games.arkanoid.dx = 0;
+        inxtr.games.arkanoid.dy = 0;
         inxtr.games.arkanoid.intervalId = init();
-        init_bricks();
+        if(!inxtr.games.arkanoid.bricksStarted){
+            init_bricks();
+            inxtr.games.arkanoid.bricksStarted = true;    
+        }
         init_paddle();
         inxtr.games.arkanoid.gameRun = true;
         $('#play-again').hide()
+        var count = 5;
+        msgDraw("Get Ready!");
+        var counter = setInterval(function(){
+             if(count==0){
+                inxtr.games.arkanoid.dx = 2;
+                inxtr.games.arkanoid.dy = 4;
+                clearInterval(counter);
+             }   
+             count--;
+        },1000);
     }
 }
 
