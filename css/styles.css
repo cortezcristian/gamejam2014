@@ -106,3 +106,14 @@ canvas.lighter {opacity: 0.7; }
     left: 0;
 }
 
+.win-face {
+    background: #90ee90;
+}
+
+.win-face p, .lose-face p {
+    font-size: 100px;
+}
+
+.lose-face {
+    background: #fc1501;
+}

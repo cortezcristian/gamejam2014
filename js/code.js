@@ -30,6 +30,14 @@ for(var i = 0, l = props.length; i < l; i++) {
 inxtr.rotateCube = function(xAngle,yAngle,zAngle){
     document.getElementById('cube').style[prop] = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg) rotateZ("+zAngle+"deg)";
 }
+//win rotate
+//inxtr.rotateCube(-90,0,0)
+//lose rotate
+//inxtr.rotateCube(90,-180,0)
+//5 face
+//inxtr.rotateCube(-90,-270,90)
+//3 face
+//  (-90,-90,-90) move Y
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
     , b2AABB = Box2D.Collision.b2AABB
@@ -211,7 +219,7 @@ function createWorld()
         //console.log(color);
         if(color=="#ff0000"){
             $(".winner").show();
-            inxtr.rotateCube(0,0,0);
+            inxtr.rotateCube(0,-90,0);
         }
         //console.log(contact.GetFixtureA().GetBody().GetUserData()['border_color']);
         //console.log("> ", contact.GetFixtureA().GetBody());
@@ -663,7 +671,10 @@ $(function()
                     msgDraw(loser[parseInt(Math.random()*loser.length)]);
                     gameRun = false;
                     $('#play-again').show();
-                    inxtr.rotateCube(0,-180,0);
+                    setTimeout(function(){
+                        //rotate 4 / 2nd
+                        inxtr.rotateCube(0,-180,0);
+                    },2000);
                 }    
               }
              
