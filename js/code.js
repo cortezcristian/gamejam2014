@@ -38,6 +38,36 @@ inxtr.rotateCube = function(xAngle,yAngle,zAngle){
 //inxtr.rotateCube(-90,-270,90)
 //3 face
 //  (-90,-90,-90) move Y
+var zrot = 0;
+var impulseVecs = [], impulse;
+ 
+$(document).ready(function(){
+impulseVecs['180'] = new b2Vec2(0,10), //up
+impulseVecs['0'] = new b2Vec2(0,-10), //DOwn
+impulseVecs['90'] = new b2Vec2(10,0), // East
+impulseVecs['270'] = new b2Vec2(-10,0); // West
+
+$('body').keydown(function(evt) {
+    switch(evt.keyCode) {
+        case 37: // left <-
+            zrot += 90;
+            inxtr.rotateCube(0,0,zrot);
+            impulse = impulseVecs[zrot%360];
+            superball.ApplyImpulse(impulse,superball.GetWorldCenter());
+            world.SetGravity(impulse)
+        break;
+        case 39: // right ->
+            zrot -= 90;
+            inxtr.rotateCube(0,0,zrot);
+            impulse = impulseVecs[zrot%360];
+            superball.ApplyImpulse(impulse,superball.GetWorldCenter());
+            world.SetGravity(impulse)
+        break;
+    }
+});
+
+});
+
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
     , b2AABB = Box2D.Collision.b2AABB
@@ -69,7 +99,7 @@ var maze_base;
  
 //box2d to canvas scale , therefor 1 metre of box2d = 30px of canvas :)
 var scale = 30;
- 
+
 /*
     Draw a world
     this method is called in a loop to redraw the world
@@ -97,7 +127,7 @@ function draw_world(world, context)
 function createWorld() 
 {
     //Gravity vector x, y - 10 m/s2 - thats earth!!
-    var gravity = new b2Vec2(0, -10);
+    var gravity = new b2Vec2(0, 0);
      
     world = new b2World(gravity , true );
      
@@ -219,7 +249,7 @@ function createWorld()
         //console.log(color);
         if(color=="#ff0000"){
             $(".winner").show();
-            inxtr.rotateCube(0,-90,0);
+            //inxtr.rotateCube(0,-90,0);
         }
         //console.log(contact.GetFixtureA().GetBody().GetUserData()['border_color']);
         //console.log("> ", contact.GetFixtureA().GetBody());
@@ -673,7 +703,7 @@ $(function()
                     $('#play-again').show();
                     setTimeout(function(){
                         //rotate 4 / 2nd
-                        inxtr.rotateCube(0,-180,0);
+                        //inxtr.rotateCube(0,-180,0);
                     },2000);
                 }    
               }
