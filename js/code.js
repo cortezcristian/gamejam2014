@@ -16,6 +16,7 @@
 
 var inxtr = {};
     inxtr.games = {};
+    inxtr.lifes = 3;
 
 var props = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' '),
     prop,
@@ -497,6 +498,13 @@ function draw() {
         msgDraw(inxtr.games.arkanoid.loser[parseInt(Math.random()*inxtr.games.arkanoid.loser.length)]);
         inxtr.games.arkanoid.gameRun = false;
         $('#play-again').show();
+        inxtr.lifes--;
+        var l = Math.abs(2-3);
+        $('.life li').each(function(i,v){
+            if(i<l){
+                $(v).addClass('lost');    
+            }   
+        })
         setTimeout(function(){
             //rotate 4 / 2nd
             inxtr.rotateCube(0,-180,0);
