@@ -1,10 +1,29 @@
 * {
     margin:0;
     padding:0;
+    color: #fff;
+    font-family: 'VT323', cursive;
 }
 body {
-    font-family: 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif;
     font-size: 15px;
+    background: #0d0e13; /* Old browsers */
+
+    background: -moz-linear-gradient(top,  #0d0e13 1%, #1b212f 44%, #212838 100%); /* FF3.6+ */
+
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#0d0e13), color-stop(44%,#1b212f), color-stop(100%,#212838)); /* Chrome,Safari4+ */
+
+    background: -webkit-linear-gradient(top,  #0d0e13 1%,#1b212f 44%,#212838 100%); /* Chrome10+,Safari5.1+ */
+
+    background: -o-linear-gradient(top,  #0d0e13 1%,#1b212f 44%,#212838 100%); /* Opera 11.10+ */
+
+    background: -ms-linear-gradient(top,  #0d0e13 1%,#1b212f 44%,#212838 100%); /* IE10+ */
+
+    background: linear-gradient(to bottom,  #0d0e13 1%,#1b212f 44%,#212838 100%); /* W3C */
+
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0d0e13', endColorstr='#212838',GradientType=0 ); /* IE6-9 */
+    overflow:auto;
+
+
 }
 ul {
     float: left;    
@@ -117,3 +136,18 @@ canvas.lighter {opacity: 0.7; }
 .lose-face {
     background: #fc1501;
 }
+
+ul.life li {
+    float: left;
+    margin: 10px 20px;
+    background:transparent url('../images/life.png') no-repeat scroll 0 0;
+    width: 100px;
+    height: 90px;
+}
+
+ul.life li.lost {
+    background-position: -110px 0;
+}
+
+
+
