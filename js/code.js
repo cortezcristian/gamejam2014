@@ -60,9 +60,9 @@ function draw_world(world, context)
     ctx.font = 'bold 18px arial';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fff';
-    ctx.fillText('FaceMaze2d', canvas_width/2, 20);
+    //ctx.fillText('FaceMaze2d', canvas_width/2, 20);
     ctx.font = 'bold 14px arial';
-    ctx.fillText('Move your face :) by @cortezcristian', canvas_width/2, 40);
+    //ctx.fillText('Move your face :) by @cortezcristian', canvas_width/2, 40);
     ctx.fillText('Start', 50, 90);
     ctx.fillText('Finish', canvas_width-100, 320);
 }
@@ -502,6 +502,7 @@ $(function()
             var rightDown = false;
             var leftDown = false;
             var gameRun = false;
+            var faceRun = false;
             //BRICKS
             var bricks  = [],
                 NROWS   = 5,
@@ -525,7 +526,7 @@ $(function()
             function init_paddle(){
                 paddlex = WIDTH/2;
                 paddleh = 10;
-                paddlew = 75;
+                paddlew = 125;
             }
 
             function init() {
@@ -638,6 +639,7 @@ $(function()
                 if(x>paddlex&&x<paddlex+paddlew){
                     dy = -dy;
                 }else{
+                    //dy = -dy;
                     clearInterval(intervalId);
                     msgDraw(loser[parseInt(Math.random()*loser.length)]);
                     gameRun = false;
@@ -690,14 +692,17 @@ $(function()
 
                 document.addEventListener('headtrackingEvent',  function(e){
                    console.log(e) 
-                   if(!gameRun){
+                   if(!gameRun && !faceRun){
+                    faceRun = true;
                     //Arrancar
                     startGame();
                    }
-                   var xhead = e.x/11*scale+scale/2;        
+                   var xhead = parseInt(e.x*10);        
+                   $('.paddle-move').text(xhead);
                    $('.paddle').text(paddlex);
                    if(paddlex > 1 && paddlex < WIDTH-paddlew){
-                     paddlex += xhead; 
+                     diff = WIDTH/2+xhead; 
+                     paddlex = (diff<=1)?2:((diff>=WIDTH-paddlew)?WIDTH-paddlew-1:diff); 
                    }
                 });
             });
