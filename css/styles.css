@@ -1,0 +1,108 @@
+* {
+    margin:0;
+    padding:0;
+}
+body {
+    font-family: 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+}
+ul {
+    float: left;    
+    list-style: none;
+}
+hr {
+    clear: both;    
+}
+.winner {
+    display: none;
+}
+.panel {
+    float: left;
+    min-width: 640px;
+}
+.panel-g {
+    float: left;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #d9d9d9;
+    padding: 1.25em;
+    background: #f2f2f2;
+}
+#experiment {
+  -webkit-perspective: 800;
+  -webkit-perspective-origin: 50% 50%;
+  -moz-perspective: 800;
+  -moz-perspective-origin: 50% 50%;
+}
+#cube {
+  position: relative;
+  margin: 100px auto 0;
+  height: 400px;
+  width: 400px;
+  -webkit-transition: -webkit-transform 0.1s linear;
+  -webkit-transform-style: preserve-3d;
+  -moz-transition: -moz-transform 0.1s linear;
+  -moz-transform-style: preserve-3d;
+}
+.face {
+  position: absolute;
+  height: 400px;
+  width: 400px;
+  /*padding: 20px;*/
+  background-color: rgba(50, 50, 50, 0.7);
+  line-height: 1em;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 3px;
+  font-size: 300px;
+  text-align: center;
+}
+#cube .one  {
+  -webkit-transform: rotateX(90deg) translateZ(200px);
+  -moz-transform: rotateX(90deg) translateZ(200px);
+}
+#cube .two {
+  -webkit-transform: translateZ(200px);
+  -moz-transform: translateZ(200px);
+}
+#cube .three {
+  -webkit-transform: rotateY(90deg) translateZ(200px);
+  -moz-transform: rotateY(90deg) translateZ(200px);
+}
+#cube .four {
+  -webkit-transform: rotateY(180deg) translateZ(200px);
+  -moz-transform: rotateY(180deg) translateZ(200px);
+}
+#cube .five {
+  -webkit-transform: rotateY(-90deg) translateZ(200px);
+  -moz-transform: rotateY(-90deg) translateZ(200px);
+}
+#cube .six {
+  -webkit-transform: rotateX(-90deg) rotate(180deg) translateZ(200px);
+  -moz-transform: rotateX(-90deg) rotate(180deg) translateZ(200px);
+}
+canvas.darker {opacity: 0.8; }
+canvas.lighter {opacity: 0.7; }
+.game-main {
+}
+
+#inputCanvas, #inputVideo {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+#inputVideo {
+    left: 0;
+}
+
+.life, .metrics {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+.metrics {
+    left: 0;
+}
+

@@ -6,18 +6,36 @@
         <title>Inextricable</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/styles.css">
     </head>
     <body>
         <div class="game-main">
-            <div class="arkapoint">
-                <canvas id="canvas-ark" width="300" height="300" style="border:0px solid black"></canvas>
-            </div>
-            <div class="facemaze">
-                <canvas height="480" id="canvas" style="background-color:#333333;float:left;" width="640"></canvas>
+            <div id="experiment">
+                <div id="cube">
+                    <div class="face one">
+                        Win!!
+                    </div>
+                    <div class="face two">
+                        <canvas id="canvas-ark" width="300" height="300" style="border:0px solid black"></canvas>
+                    </div>
+                    <div class="face three p">
+                        3
+                    </div>
+                    <div class="face four">
+                        <canvas height="300" id="canvas" style="background-color:#333333;float:left;" width="300"></canvas>
+                    </div>
+                    <div class="face five">
+                        5
+                    </div>
+                    <div class="face six">
+                        Lose!!
+                    </div>
+                </div>
             </div>
         </div>
         <div class="game-assets">
-            <ul>
+            <canvas id="inputCanvas" width="320" height="240"></canvas><video id="inputVideo" autoplay="autoplay" loop="loop" style="-webkit-transform: rotateX(0deg) rotateY(-180deg) rotateZ(0deg)"></video>
+            <ul class="life">
                 <li><3</li>
                 <li><3</li>
                 <li><3</li>
@@ -30,7 +48,7 @@
                 <div class="best-player-photo">
                 </div>
             </div>
-            <ul>
+            <ul class="metrics">
                 <li>Metrics</li>
                 <li>X: <span class="x-head">0</span></li>
                 <li>Y: <span class="y-head">0</span></li>
@@ -41,10 +59,7 @@
                     <img src="./img/win1.jpg" style="max-height:400px;" />
                 </li>
             </ul>
-            <canvas id="inputCanvas" width="320" height="240"></canvas><video id="inputVideo" autoplay="autoplay" loop="loop" style="-webkit-transform: rotateX(0deg) rotateY(-180deg) rotateZ(0deg)"></video>
-
         </div>
-
         <script src="js/jquery-1.6.4.min.js"></script>
         <script src="js/Box2dWeb-2.1.a.3.js"></script>
         <script src="js/headtrackr.js"></script>

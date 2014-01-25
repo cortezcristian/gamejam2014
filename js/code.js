@@ -13,6 +13,13 @@
         Mouse joint demo of box2d in javascript
         Silver Moon (m00n.silv3r@gmail.com)
 */
+
+var inxtr = {}
+
+inxtr.rotateCube = function(xAngle,yAngle,zAngle){
+    document.getElementById('cube').style['transform'] = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg) rotateZ("+zAngle+"deg)";
+}
+
 var b2Vec2 = Box2D.Common.Math.b2Vec2
     , b2AABB = Box2D.Collision.b2AABB
     , b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -707,4 +714,5 @@ $(function()
                 });
             });
 })();
+
 
