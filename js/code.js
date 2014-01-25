@@ -522,6 +522,7 @@ function draw() {
         }else{
             setTimeout(function(){
                 //You lose
+                inxtr.alive = false;
                 inxtr.rotateCube(90,-180,0)
             },2000);
         }
