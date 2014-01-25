@@ -211,7 +211,7 @@ function createWorld(world, gravity, canvasid, scale) {
         //console.log(contact.GetFixtureA().GetBody().GetUserData());
         //console.log("> ", contact.GetFixtureA().GetBody());
         if(color=="#ff0000"){
-            $(".winner").hide();
+            //$(".winner").hide();
         }
     }
     world.SetContactListener(listener);
@@ -429,7 +429,8 @@ function checkWinner() {
             clearInterval(inxtr.games.arkanoid.intervalId);
             msgDraw("You Win!");
             inxtr.games.arkanoid.gameRun = false;
-            $('#play-again').show();
+            //$('#play-again').show();
+            inxtr.rotateCube(-90,0,0)
         }, 50);
     }
     /**Borrar mas tarde

@@ -115,14 +115,24 @@ canvas.lighter {opacity: 0.7; }
     left: 0;
 }
 
-.life, .metrics {
+.life, .metrics, .user-points {
     position: fixed;
     top: 0;
     right: 0;
 }
 
-.metrics {
+.metrics, .user-points {
     left: 0;
+}
+
+.user-points {
+    font-size: 100px;
+    display: inline;
+    background: rgba(0,0,0,0.1);
+    z-index: -1;
+    zoom: 136%;
+    margin: -16px 0;
+    padding: 0;
 }
 
 .win-face {
@@ -155,4 +165,8 @@ ul.life li.lost {
     font-size: 54px;
     line-height: 54px;
     margin: 140px 10px;
+}
+
+.metrics {
+    top: 200px !important;
 }
