@@ -501,6 +501,9 @@ function draw() {
   }else if(inxtr.games.arkanoid.y + inxtr.games.arkanoid.dy > inxtr.games.arkanoid.HEIGHT){
     if(inxtr.games.arkanoid.x>inxtr.games.arkanoid.paddlex&&inxtr.games.arkanoid.x<inxtr.games.arkanoid.paddlex+inxtr.games.arkanoid.paddlew){
         inxtr.games.arkanoid.dy = -inxtr.games.arkanoid.dy;
+        var c = inxtr.games.arkanoid.paddlex+inxtr.games.arkanoid.paddlew/2;
+        var m = Math.abs(inxtr.games.arkanoid.x-c)/inxtr.games.arkanoid.paddlew/2;
+        inxtr.games.arkanoid.dx = inxtr.games.arkanoid.dx+0.5*m;
     }else{
         //dy = -dy;
         clearInterval(inxtr.games.arkanoid.intervalId);
