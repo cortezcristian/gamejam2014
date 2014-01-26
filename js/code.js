@@ -34,6 +34,12 @@ for(var i = 0, l = props.length; i < l; i++) {
 inxtr.rotateCube = function(xAngle,yAngle,zAngle){
     document.getElementById('cube').style[prop] = "rotateX("+xAngle+"deg) rotateY("+yAngle+"deg) rotateZ("+zAngle+"deg)";
 }
+
+inxtr.resetMaze = function(xAngle,yAngle,zAngle){
+    inxtr.games.facemaze.mouse_joint = false; 
+    inxtr.games.facemaze.world = createWorld(inxtr.games.facemaze.world, inxtr.games.facemaze.gravity, inxtr.games.facemaze.canvasid, inxtr.games.facemaze.scale);
+}
+
 //win rotate
 //inxtr.rotateCube(-90,0,0)
 //lose rotate
@@ -203,6 +209,14 @@ function createWorld(world, gravity, canvasid, scale) {
         if(color=="#ff0000"){
             //$(".winner").show();
             inxtr.rotateCube(0,0,0);
+            inxtr.resetMaze();
+            if(inxtr.games.arkanoid.gameRun){
+                //arcanoid is alive
+                inxtr.points += 50;
+            }else{
+                inxtr.points += 2;
+            }
+            $('.user-points').text(inxtr.points);
             startGame();
         }
         //console.log(contact.GetFixtureA().GetBody().GetUserData()['border_color']);
