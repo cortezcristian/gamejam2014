@@ -366,6 +366,8 @@ inxtr.games.arkanoid.dy = 4;
 inxtr.games.arkanoid.WIDTH;
 inxtr.games.arkanoid.HEIGHT;
 inxtr.games.arkanoid.ctx;
+inxtr.games.arkanoid.wins = 0;
+inxtr.games.arkanoid.winsObj = 2;
 inxtr.games.arkanoid.paddlex;
 inxtr.games.arkanoid.paddleh;
 inxtr.games.arkanoid.paddlew = 150;
@@ -399,7 +401,9 @@ function init_bricks(){
 function init_paddle(){
     inxtr.games.arkanoid.paddlex = inxtr.games.arkanoid.WIDTH/2;
     inxtr.games.arkanoid.paddleh = 10;
-    inxtr.games.arkanoid.paddlew -= 25;
+    if(inxtr.games.arkanoid.paddlew>25){
+        inxtr.games.arkanoid.paddlew -= 25;
+    }
 }
 
 function init() {
@@ -443,10 +447,23 @@ function checkWinner() {
     if(!findOne){
         setTimeout(function(){
             clearInterval(inxtr.games.arkanoid.intervalId);
-            msgDraw("You Win!");
-            inxtr.games.arkanoid.gameRun = false;
-            //$('#play-again').show();
-            inxtr.rotateCube(-90,0,0)
+            inxtr.games.arkanoid.wins++;
+            if(inxtr.games.arkanoid.wins>=inxtr.games.arkanoid.winsObj){
+                //Definitive winner
+                msgDraw("You Win!");
+                inxtr.games.arkanoid.gameRun = false;
+                //$('#play-again').show();
+                setTimeout(function(){
+                    inxtr.rotateCube(-90,0,0)
+                }, 4000);
+            }else{
+                msgDraw("Won "+inxtr.games.arkanoid.wins+" of "+inxtr.games.arkanoid.winsObj);
+                init_bricks();
+                inxtr.games.arkanoid.gameRun = false;
+                setTimeout(function(){
+                    inxtr.rotateCube(0,-180,0);
+                }, 4000);
+            }
         }, 50);
     }
     /**Borrar mas tarde
