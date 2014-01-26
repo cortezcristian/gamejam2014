@@ -354,7 +354,7 @@ inxtr.games.arkanoid.HEIGHT;
 inxtr.games.arkanoid.ctx;
 inxtr.games.arkanoid.paddlex;
 inxtr.games.arkanoid.paddleh;
-inxtr.games.arkanoid.paddlew;
+inxtr.games.arkanoid.paddlew = 150;
 inxtr.games.arkanoid.intervalId;
 inxtr.games.arkanoid.rightDown = false;
 inxtr.games.arkanoid.leftDown = false;
@@ -385,7 +385,7 @@ function init_bricks(){
 function init_paddle(){
     inxtr.games.arkanoid.paddlex = inxtr.games.arkanoid.WIDTH/2;
     inxtr.games.arkanoid.paddleh = 10;
-    inxtr.games.arkanoid.paddlew = 125;
+    inxtr.games.arkanoid.paddlew -= 25;
 }
 
 function init() {
