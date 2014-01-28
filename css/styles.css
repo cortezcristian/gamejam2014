@@ -158,3 +158,13 @@ ul.life li.lost {
 .metrics {
     top: 200px !important;
 }
+.mod-social {
+    position:fixed;
+    top:115px;
+    right:0;
+    width: 300px;
+    margin: 0 auto;    
+    height:70px;
+    padding: 10px;
+    background: rgba(25,25,25,0.8);
+}
